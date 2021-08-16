@@ -19,9 +19,7 @@ std::ostream &operator<<(std::ostream &out, const Magick::ColorRGB &color)
 namespace util
 {
     // 70 levels of gray
-    inline const std::string characters1{R"($@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~i!lI;:,"^`". )"};
-    // 10 levels of gray
-    inline const std::string characters2{"@%#*+=-:. "};
+    inline const std::string characters{R"($@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~i!lI;:,"^`". )"};
     inline const std::string RESET{"\033[m"};
 
     int percentageToRGB(double value)
