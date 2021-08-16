@@ -43,4 +43,9 @@ namespace util
                + std::to_string(green) + ";"
                + std::to_string(blue) + "m";
     }
+
+    unsigned int calculateNewHeight(unsigned int originalHeight, unsigned int originalWidth, unsigned int newWidth)
+    {
+        return static_cast<unsigned int>(std::round(originalHeight / originalWidth)) * newWidth;
+    }
 }

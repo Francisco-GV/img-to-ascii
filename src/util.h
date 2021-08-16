@@ -19,6 +19,7 @@ namespace util
     int percentageToRGB(double);
     std::string ansiRGB(int red, int green, int blue);
     std::string ansiRGB(double red, double green, double blue);
+    unsigned int calculateNewHeight(unsigned int originalHeight, unsigned int originalWidth, unsigned int newWidth);
 }
 
 #endif
