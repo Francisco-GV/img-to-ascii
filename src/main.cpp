@@ -4,34 +4,45 @@
 #include <iostream>
 #include <string>
 #include <Magick++.h>
+#include <memory>
 #include "util.h"
 
 using std::cout;
 using std::cerr;
 using std::endl;
 
+void init(char**);
+std::unique_ptr<Magick::Image> loadImage(const std::string &path);
+void ImagetoGrayscale(Magick::Image &image);
+
 int main(int argc, char **args)
 {
+    // Number of tiles in the output
+    unsigned int columns{80};
+    unsigned int rows{};
+
     try
     {
-        Magick::InitializeMagick(*args);
-        Magick::Image image("/home/frank/Pictures/image24x24.png");
+        init(args);
 
-        size_t width{image.columns()};
-        size_t height{image.rows()};
+        std::unique_ptr<Magick::Image> image = loadImage(args[1]);
+        size_t width{image->columns()};
+        size_t height{image->rows()};
 
-        for (ssize_t y{0}; y < height; y++)
-        {
-            for (ssize_t x{0}; x < width; x++)
-            {
-                Magick::ColorRGB rgb(image.pixelColor(x, y));
+        cout << "Image: " << image->fileName() << endl;
+        cout << "image original size:" << width << "x" << height << endl;
 
-                std::string color = util::ansiRGB(rgb.red(), rgb.green(), rgb.blue());
-                cout << color << " ";
-            }
-            cout << util::RESET << "\n";
-        }
-        cout << util::RESET << endl;
+        ImagetoGrayscale(*image);
+        rows = util::calculateNewHeight(height, width, columns);
+
+        cout << "Columns: " << columns << endl;
+        cout << "Rows: " << rows << endl;
+
+        size_t cellsWidth{width / columns};
+        size_t cellsHeight{height / rows};
+
+        cout << "Tile width: " << cellsWidth << endl;
+        cout << "Tile height: " << cellsHeight << endl;
     }
     catch (Magick::Exception &error)
     {
