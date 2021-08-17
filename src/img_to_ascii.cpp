@@ -6,6 +6,7 @@
 #include <memory>
 #include <Magick++.h>
 #include <string>
+#include <iomanip>
 #include "util.h"
 
 void prepareImage(Magick::Image &);
@@ -13,7 +14,7 @@ std::unique_ptr<Magick::Image> loadImage(const std::string &);
 std::string parsePixelsToASCII(const Magick::Image &, unsigned int, unsigned int, size_t, size_t);
 unsigned int getAverage(const Magick::Image &, unsigned int, unsigned int, size_t, size_t);
 
-std::string convertImageToASCII(char **argv, const std::string &file, unsigned int columns, double scale)
+std::string convertImageToASCII(char **argv, const std::string &file, unsigned int columns, double scale, bool debug)
 {
     using std::cout;
     using std::endl;
@@ -26,25 +27,27 @@ std::string convertImageToASCII(char **argv, const std::string &file, unsigned i
     size_t width{image->columns()};
     size_t height{image->rows()};
 
-    cout << "Image: " << image->fileName() << endl;
-    cout << "image original size:" << width << "x" << height << endl;
-
     prepareImage(*image);
 
-    size_t cellsWidth{width / columns};
-    size_t cellsHeight{static_cast<size_t>(cellsWidth / scale)};
-    // size_t cellsHeight{height / rows}; // <- warning: this doesn't keep aspect ratio in console/file output
+    size_t cellWidth{width / columns};
+    size_t cellHeight{static_cast<size_t>(cellWidth / scale)};
+    //height / rows; // <- warning: this doesn't keep aspect ratio in console/file output
 
-    cout << "Tile width: " << cellsWidth << endl;
-    cout << "Tile height: " << cellsHeight << endl;
+    rows = height / cellHeight;
+    //util::calculateNewHeight(height, width, columns); // <- warning: calculate number of rows using cellHeight{height / rows}
 
-    rows = height / cellsHeight;
-    // rows = util::calculateNewHeight(height, width, columns); // <- warning: calculate number of rows using cellsHeight{height / rows}
+    if (debug)
+    {
+        using std::left, std::setw;
+        int n{22};
+        cout << setw(n) << left << "file: " << image->fileName() << endl;
+        cout << setw(n) << left << "image size: " << width << "x" << height << " pixels" << endl;
+        cout << setw(n) << left << "Height scale factor: " << scale << endl;
+        cout << setw(n) << left << "Cell size: " << cellWidth << "x" << cellHeight << " pixels" << endl;
+        cout << setw(n) << left << "ASCII size: " << columns << "x" << rows << " characters" << endl;
+    }
 
-    cout << "Columns: " << columns << endl;
-    cout << "Rows: " << rows << endl;
-
-    return parsePixelsToASCII(*image, columns, rows, cellsWidth, cellsHeight);
+    return parsePixelsToASCII(*image, columns, rows, cellWidth, cellHeight);
 }
 
 std::unique_ptr<Magick::Image> loadImage(const std::string &path)
