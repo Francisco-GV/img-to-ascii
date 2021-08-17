@@ -22,6 +22,12 @@ namespace util
     inline const std::string characters{R"($@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~i!lI;:,"^`". )"};
     inline const std::string RESET{"\033[m"};
 
+    void exitProgram(const std::string &reason)
+    {
+        std::cerr << reason << std::endl;
+        exit(-1);
+    }
+
     int percentageToRGB(double value)
     {   // If 1.0 is 255 then x = y * 255 / 1
         return static_cast<int>(std::round(value * 255));

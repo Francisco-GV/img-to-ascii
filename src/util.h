@@ -15,6 +15,7 @@ namespace util
 {
     extern const std::string characters;
     extern const std::string RESET;
+    void exitProgram(const std::string& reason);
     int percentageToRGB(double);
     std::string ansiRGB(int red, int green, int blue);
     std::string ansiRGB(double red, double green, double blue);
