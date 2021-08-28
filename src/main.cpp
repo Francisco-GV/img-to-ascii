@@ -2,6 +2,8 @@
 // Created by frank on 14/08/21.
 //
 #include <iostream>
+#include <fstream>
+#include <memory>
 #include <string>
 #include <cstdlib>
 #include <unistd.h>
@@ -17,18 +19,36 @@ std::string convertImageToASCII(char **argv, const std::string &file, unsigned i
 int main(int argc, char **argv)
 {
     bool debug{false};
+    bool outputInFile{false};
+    bool viewInStandardOutput{false};
     // Number of tiles in the output
     unsigned int columns{80};
-    unsigned int rows{};
 
     double scale{0.43};
 
+    std::unique_ptr<std::ofstream> outputFile {};
+
     int opt;
-    while ((opt = getopt(argc, argv, ":dc:s:")) != -1)
+    while ((opt = getopt(argc, argv, ":dc:s:vo:")) != -1)
     {
         switch (opt)
         {
-            case 'd': debug = true; break;
+            case 'd':
+                debug = true;
+                break;
+
+            case 'v':
+                viewInStandardOutput = true;
+
+            case 'o':
+            {
+                outputInFile = true;
+                const char* filePath{optarg};
+
+                outputFile = std::make_unique<std::ofstream>(std::ofstream());
+                outputFile->open(filePath, std::ios::out);
+            } break;
+
             case 'c':
             {
                 char *endptr;
@@ -38,6 +58,7 @@ int main(int argc, char **argv)
                     util::exitProgram("-c (columns) must be an positive integer number");
                 else columns = value;
             } break;
+
             case 's':
             {
                 char *endptr;
@@ -48,8 +69,15 @@ int main(int argc, char **argv)
                 else scale = value;
             } break;
 
-            case '?': cerr << "invalid option: " << optopt << endl; break;
-            case ':': default: break;
+            case '?':
+                cerr << "invalid option: " << optopt << endl;
+                break;
+
+            case ':':
+                if (optopt == 'o')
+                    cout << "Argument missing for " << static_cast<char>(optopt) << endl;
+            default:
+                break;
         }
     }
 
@@ -64,7 +92,15 @@ int main(int argc, char **argv)
     {
         std::string ascii = convertImageToASCII(argv, file, columns, scale, debug);
         if (debug) cout << "showing output..." << endl;
-        cout << ascii << endl;
+
+        if (outputInFile)
+        {
+            *outputFile << ascii;
+            outputFile->close();
+        }
+
+        if (!outputInFile || viewInStandardOutput)
+            cout << ascii << endl;
     }
     catch (Magick::Exception &error)
     {
