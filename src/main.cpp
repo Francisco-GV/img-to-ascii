@@ -15,36 +15,26 @@ using std::cerr;
 using std::endl;
 
 std::string convertImageToASCII(char **argv, const std::string &file,
-                                unsigned int columns, double scale, bool debug);
+                                unsigned int columns, double scale,
+                                bool moreCharacters, bool debug);
 
 int main(int argc, char **argv)
 {
     bool debug{false};
     bool outputInFile{false};
     bool viewInStandardOutput{false};
+    bool moreCharacters{false};
+
     unsigned int columns{80};
     double scale{0.43};
 
     std::string path;
 
     int opt;
-    while ((opt = getopt(argc, argv, ":dvc:s:o:")) != -1)
+    while ((opt = getopt(argc, argv, ":dvmc:s:o:")) != -1)
     {
         switch (opt)
         {
-            case 'd':
-                debug = true;
-                break;
-
-            case 'v':
-                viewInStandardOutput = true;
-                break;
-
-            case 'o':
-                outputInFile = true;
-                path = optarg;
-                break;
-
             case 'c':
             {
                 char *endptr;
@@ -74,8 +64,13 @@ int main(int argc, char **argv)
             case ':':
                 if (optopt == 'o')
                     cout << "Argument missing for 'o'" << endl;
-            default:
                 break;
+
+            case 'd':   debug = true;                       break;
+            case 'v':   viewInStandardOutput = true;        break;
+            case 'm':   moreCharacters = true;              break;
+            case 'o':   outputInFile = true; path = optarg; break;
+            default :   break;
         }
     }
 
@@ -86,12 +81,13 @@ int main(int argc, char **argv)
 
     try
     {
-        std::string ascii = convertImageToASCII(argv, file, columns, scale, debug);
+        std::string ascii = convertImageToASCII(argv, file, columns, scale,
+                                                moreCharacters, debug);
         if (debug)
         {
             if (outputInFile)
                 cout << std::setw(22) << std::left << "output to: " << path << endl;
-            cout << "\n" << endl;
+            cout << endl;
         }
 
         if (outputInFile)

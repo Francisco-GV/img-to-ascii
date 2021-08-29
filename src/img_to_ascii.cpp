@@ -13,12 +13,13 @@
 void prepareImage(Magick::Image &);
 std::unique_ptr<Magick::Image> loadImage(const std::string &);
 std::string parsePixelsToASCII(const Magick::Image &, unsigned int,
-                               unsigned int, size_t, size_t);
+                               unsigned int, size_t, size_t, bool);
 unsigned int getAverage(const Magick::Image &, unsigned int, unsigned int,
                         size_t, size_t);
 
 std::string convertImageToASCII(char **argv, const std::string &file,
-                                unsigned int columns, double scale, bool debug)
+                                unsigned int columns, double scale,
+                                bool moreCharacters, bool debug)
 {
     using std::cout;
     using std::endl;
@@ -60,7 +61,8 @@ std::string convertImageToASCII(char **argv, const std::string &file,
                 << columns << "x" << rows << " characters" << endl;
     }
 
-    return parsePixelsToASCII(*image, columns, rows, cellWidth, cellHeight);
+    return parsePixelsToASCII(*image, columns, rows, cellWidth, cellHeight,
+                              moreCharacters);
 }
 
 std::unique_ptr<Magick::Image> loadImage(const std::string &path)
@@ -98,10 +100,11 @@ unsigned int getAverage(const Magick::Image &image, unsigned int columnNumber,
 }
 
 std::string parsePixelsToASCII(const Magick::Image &image, unsigned int columns,
-                               unsigned int rows, size_t cellsWidth, size_t cellsHeight)
+                               unsigned int rows, size_t cellsWidth, size_t cellsHeight,
+                               bool moreCharacters)
 {
 
-    const std::string& characters{util::characters2};
+    const std::string& characters{moreCharacters ? util::characters1 : util::characters2};
 
     std::string ascii;
     for (unsigned int n{0}; n < rows; n++)
