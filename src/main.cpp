@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
-#include <cstdlib>
+#include <cstdlib>      // for strtol and strtod
 #include <unistd.h>     // for getopt
 #include <exception>
 #include "util.h"
