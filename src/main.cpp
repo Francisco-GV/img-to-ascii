@@ -87,9 +87,12 @@ int main(int argc, char **argv)
     try
     {
         std::string ascii = convertImageToASCII(argv, file, columns, scale, debug);
-
-        if (debug && outputInFile)
-            cout << std::setw(22) << std::left << "output to: " << path << endl;
+        if (debug)
+        {
+            if (outputInFile)
+                cout << std::setw(22) << std::left << "output to: " << path << endl;
+            cout << "\n" << endl;
+        }
 
         if (outputInFile)
         {
@@ -100,10 +103,7 @@ int main(int argc, char **argv)
         }
 
         if (!outputInFile || viewInStandardOutput)
-        {
-            cout << "Showing output..." << endl;
             cout << ascii << endl;
-        }
     }
     catch (std::exception &error)
     {
