@@ -13,7 +13,8 @@ std::ostream &operator<<(std::ostream &out, const Magick::ColorRGB &color);
 
 namespace util
 {
-    extern const std::string characters;
+    extern const std::string characters1;
+    extern const std::string characters2;
     extern const std::string RESET;
     void exitProgram(const std::string& reason);
     int percentageToRGB(double);
