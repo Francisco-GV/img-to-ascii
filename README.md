@@ -38,6 +38,18 @@ _img to ASCII_ has several optional command line options:
         <b>-d</b>
         <p>&emsp;&emsp;Debug mode. Print additional information.</p>
     </li><br>
+    <li>
+        <b>-o</b> &lt;path&gt;
+        <p>&emsp;&emsp;Set the output file to print instead of use standard output.</p>
+    </li><br>
+    <li>
+        <b>-d</b>
+        <p>&emsp;&emsp;Debug mode. Print additional information.</p>
+    </li><br>
+    <li>
+        <b>-v</b>
+        <p>&emsp;&emsp;Visualize also in standard output (if an output file was specified).</p>
+    </li>
 </ul>
 
 ### Note:
