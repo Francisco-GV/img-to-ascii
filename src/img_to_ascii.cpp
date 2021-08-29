@@ -7,6 +7,7 @@
 #include <Magick++.h>
 #include <string>
 #include <iomanip>
+#include <cmath>
 #include "util.h"
 
 void prepareImage(Magick::Image &);
@@ -32,13 +33,16 @@ std::string convertImageToASCII(char **argv, const std::string &file,
 
     prepareImage(*image);
 
-    size_t cellWidth{width / columns};
-    size_t cellHeight{static_cast<size_t>(static_cast<double>(cellWidth) / scale)};
+    size_t cellWidth{static_cast<size_t>(std::round(
+            static_cast<double>(width) / columns))};
+    size_t cellHeight{static_cast<size_t>(std::round(
+            static_cast<double>(cellWidth) / scale))};
     //height / rows; // <- warning: this doesn't keep aspect ratio in console/file output
 
-    rows = height / cellHeight;
+    rows = static_cast<size_t>(std::round(
+            static_cast<double>(height) / static_cast<double>(cellHeight)));
     //util::calculateNewHeight(height, width, columns);
-    // ^^ warning: calculate number of rows using cellHeight{height / rows}
+    // ^ warning: calculate number of rows using cellHeight{height / rows}
 
     if (debug)
     {
